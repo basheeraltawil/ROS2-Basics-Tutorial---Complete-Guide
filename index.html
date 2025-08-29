@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROS2 Basics Tutorial - Complete Guide</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+        
+        h1, h2, h3, h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+            margin-top: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background-color: var(--dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        .nav-list li {
+            margin: 0 15px;
+        }
+        
+        .nav-list a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-list a:hover {
+            color: var(--secondary);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-link {
+            display: block;
+            background-color: #f1f8ff;
+            padding: 1rem;
+            border-left: 4px solid var(--secondary);
+            margin: 1.5rem 0;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        
+        .file-link:hover {
+            background-color: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .file-link::before {
+            content: "📄 ";
+            margin-right: 10px;
+        }
+        
+        .tip {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning {
+            background-color: #ffebee;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .step {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--secondary);
+            color: white;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .code-reference {
+            font-family: 'Fira Code', monospace;
+            background-color: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-radius: 8px;
+        }
+        
+        .github-link {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .github-link:hover {
+            background-color: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-list {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-list li {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ROS2 Basics Tutorial</h1>
+        <p class="subtitle">A comprehensive guide to understanding ROS2 package structure, parameters, launch files, and more</p>
+    </header>
+    
+    <nav class="nav">
+        <ul class="nav-list">
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#package-structure">Package Structure</a></li>
+            <li><a href="#package-xml">package.xml</a></li>
+            <li><a href="#setup-py">setup.py</a></li>
+            <li><a href="#config-files">Config Files</a></li>
+            <li><a href="#node-script">Node Script</a></li>
+            <li><a href="#launch-files">Launch Files</a></li>
+            <li><a href="#building-running">Building & Running</a></li>
+        </ul>
+    </nav>
+    
+    <section id="introduction" class="section">
+        <h2>Introduction to ROS2 Basics</h2>
+        <p>Welcome to this comprehensive tutorial on ROS2 basics. This guide will walk you through the fundamental concepts of creating a ROS2 package, with a focus on practical implementation and best practices.</p>
+        
+        <p>ROS2 (Robot Operating System 2) is a set of software libraries and tools that help you build robot applications. From drivers to state-of-the-art algorithms, and with powerful developer tools, ROS2 has what you need for your next robotics project.</p>
+        
+        <p>In this tutorial, we'll explore:</p>
+        <ul>
+            <li>The structure of a ROS2 package and why it matters</li>
+            <li>How to define dependencies and metadata in package.xml</li>
+            <li>Configuring Python packages with setup.py</li>
+            <li>Using YAML files for parameter configuration</li>
+            <li>Writing node scripts that utilize parameters effectively</li>
+            <li>Creating launch files for easy execution</li>
+            <li>Building and running your ROS2 package</li>
+        </ul>
+        
+        <div class="tip">
+            <p><strong>Tip:</strong> This guide assumes you have basic knowledge of ROS2 and have it installed on your system. If not, please check the <a href="https://docs.ros.org/en/foxy/Installation.html" target="_blank">official ROS2 installation guide</a> first.</p>
+        </div>
+        
+        <a href="https://github.com/yourusername/ros2_basics" class="github-link" target="_blank">View Complete Code on GitHub</a>
+    </section>
+    
+    <section id="package-structure" class="section">
+        <h2>Package Structure</h2>
+        <p>A well-organized package structure is crucial for maintainability and collaboration in ROS2 development. The structure helps separate concerns and makes it easier to locate files as your project grows.</p>
+        
+        <p>Our ROS2 basics package follows this structure:</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics" class="file-link" target="_blank">
+            ros2_basics/ - Root directory of our package
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/tree/main/config" class="file-link" target="_blank">
+            config/ - Directory for configuration files
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/tree/main/launch" class="file-link" target="_blank">
+            launch/ - Directory for launch files
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/tree/main/ros2_basics" class="file-link" target="_blank">
+            ros2_basics/ - Python package directory
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/package.xml" class="file-link" target="_blank">
+            package.xml - Package manifest file
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/setup.py" class="file-link" target="_blank">
+            setup.py - Python setup script
+        </a>
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/setup.cfg" class="file-link" target="_blank">
+            setup.cfg - Setup configuration file
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Creating the Package</h3>
+            <p>To create a new ROS2 package, use the following command in your terminal:</p>
+            <p class="code-reference">ros2 pkg create --build-type ament_python ros2_basics</p>
+            <p>This command creates the basic package structure with all necessary files. The <span class="code-reference">--build-type ament_python</span> flag specifies that we're creating a Python package.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Understanding the Structure</h3>
+            <p>Each directory and file has a specific purpose:</p>
+            <ul>
+                <li><strong>config/</strong>: Contains YAML configuration files for parameters</li>
+                <li><strong>launch/</strong>: Contains Python launch files to start nodes</li>
+                <li><strong>ros2_basics/</strong>: The main Python package with node implementations</li>
+                <li><strong>package.xml</strong>: Defines package metadata and dependencies</li>
+                <li><strong>setup.py</strong>: Configures Python package installation</li>
+                <li><strong>setup.cfg</strong>: Additional setup configuration</li>
+            </ul>
+        </div>
+    </section>
+    
+    <section id="package-xml" class="section">
+        <h2>package.xml - Package Manifest</h2>
+        <p>The package.xml file is a crucial component of any ROS2 package. It serves as the package manifest, containing metadata, dependencies, and other essential information about your package.</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/package.xml" class="file-link" target="_blank">
+            View the complete package.xml file on GitHub
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Basic Metadata</h3>
+            <p>The package.xml starts with basic metadata about your package:</p>
+            <ul>
+                <li><strong>name</strong>: The name of your package (must match the directory name)</li>
+                <li><strong>version</strong>: The current version of your package</li>
+                <li><strong>description</strong>: A brief description of what your package does</li>
+                <li><strong>maintainer</strong>: Information about the package maintainer</li>
+                <li><strong>license</strong>: The software license for your package</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Dependencies</h3>
+            <p>Dependencies are categorized into different types:</p>
+            <ul>
+                <li><strong>build_depend</strong>: Packages needed at build time</li>
+                <li><strong>exec_depend</strong>: Packages needed at execution time</li>
+                <li><strong>test_depend</strong>: Packages needed for testing</li>
+                <li><strong>depend</strong>: Shorthand for both build_depend and exec_depend</li>
+            </ul>
+            <p>For our basic package, we depend on:</p>
+            <ul>
+                <li><span class="code-reference">rclpy</span>: The ROS2 Python client library</li>
+                <li><span class="code-reference">std_msgs</span>: Standard message types</li>
+                <li><span class="code-reference">sensor_msgs</span>: Sensor-specific message types</li>
+                <li><span class="code-reference">launch</span> and <span class="code-reference">launch_ros</span>: For launch file functionality</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Export Section</h3>
+            <p>The export section specifies build system information. For Python packages, we use:</p>
+            <p class="code-reference">&lt;build_type&gt;ament_python&lt;/build_type&gt;</p>
+            <p>This tells ROS2 that this is a Python package using the ament build system.</p>
+        </div>
+    </section>
+    
+    <section id="setup-py" class="section">
+        <h2>setup.py - Python Setup Script</h2>
+        <p>The setup.py file is used to configure the installation of your Python package. It defines entry points, data files, and other package properties.</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/setup.py" class="file-link" target="_blank">
+            View the complete setup.py file on GitHub
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Basic Configuration</h3>
+            <p>The setup.py file begins with basic package information:</p>
+            <ul>
+                <li><strong>name</strong>: Package name (should match package.xml)</li>
+                <li><strong>version</strong>: Package version</li>
+                <li><strong>packages</strong>: List of Python packages to include</li>
+                <li><strong>data_files</strong>: Non-Python files to include (config, launch files)</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Data Files</h3>
+            <p>The data_files section is crucial for including non-Python files in your package:</p>
+            <p class="code-reference">('share/ament_index/resource_index/packages', ['resource/' + package_name])</p>
+            <p class="code-reference">('share/' + package_name, ['package.xml'])</p>
+            <p class="code-reference">(os.path.join('share', package_name, 'config'), glob('config/*.yaml'))</p>
+            <p class="code-reference">(os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py'))</p>
+            <p>These lines ensure that your configuration files, launch files, and package manifest are installed to the correct locations in the ROS2 workspace.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Entry Points</h3>
+            <p>Entry points define the executables that your package provides:</p>
+            <p class="code-reference">'console_scripts': ['basic_node = ros2_basics.basic_node:main']</p>
+            <p>This creates an executable named <span class="code-reference">basic_node</span> that runs the <span class="code-reference">main</span> function in <span class="code-reference">ros2_basics/basic_node.py</span>.</p>
+        </div>
+        
+        <div class="tip">
+            <p><strong>Tip:</strong> After modifying setup.py, you need to rebuild your package for changes to take effect:</p>
+            <p class="code-reference">colcon build --packages-select ros2_basics</p>
+        </div>
+    </section>
+    
+    <section id="config-files" class="section">
+        <h2>Configuration Files</h2>
+        <p>YAML configuration files allow you to define parameters externally, making your code more flexible and maintainable. Parameters can be changed without modifying the source code.</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/config/config.yaml" class="file-link" target="_blank">
+            View the config.yaml file on GitHub
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>YAML Structure</h3>
+            <p>ROS2 parameter files use a specific YAML structure:</p>
+            <p class="code-reference">/**:</p>
+            <p class="code-reference">  ros__parameters:</p>
+            <p>The <span class="code-reference">/**</span> wildcard applies the parameters to all nodes, while <span class="code-reference">ros__parameters</span> is the namespace for ROS2 parameters.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Parameter Types</h3>
+            <p>ROS2 supports various parameter types:</p>
+            <ul>
+                <li><strong>Strings</strong>: Text values enclosed in quotes</li>
+                <li><strong>Numbers</strong>: Integer or floating-point values</li>
+                <li><strong>Booleans</strong>: true or false values</li>
+                <li><strong>Arrays</strong>: Lists of values in square brackets</li>
+            </ul>
+            <p>In our config file, we use all these types:</p>
+            <p class="code-reference">node_name: "ros2_basics_node"  # String</p>
+            <p class="code-reference">update_rate: 2.0  # Float</p>
+            <p class="code-reference">enable_logging: true  # Boolean</p>
+            <p class="code-reference">text_color: [255, 200, 50]  # Integer array</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Using Parameters in Code</h3>
+            <p>To use parameters in your node, you need to:</p>
+            <ol>
+                <li>Declare the parameters with default values</li>
+                <li>Retrieve the parameter values</li>
+                <li>Use the values in your application logic</li>
+            </ol>
+            <p>Parameters can be loaded from the command line, launch files, or YAML config files.</p>
+        </div>
+        
+        <div class="warning">
+            <p><strong>Warning:</strong> Be careful with parameter names. They are case-sensitive and must match exactly between your code and config files.</p>
+        </div>
+    </section>
+    
+    <section id="node-script" class="section">
+        <h2>Node Script</h2>
+        <p>The node script contains the main logic of your ROS2 application. It defines the behavior of your node, including publishers, subscribers, services, and parameter handling.</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/ros2_basics/basic_node.py" class="file-link" target="_blank">
+            View the basic_node.py file on GitHub
+        </a>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/ros2_basics/utils.py" class="file-link" target="_blank">
+            View the utils.py file on GitHub
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Node Structure</h3>
+            <p>A typical ROS2 node has this structure:</p>
+            <ol>
+                <li>Import necessary modules</li>
+                <li>Define the node class that inherits from <span class="code-reference">Node</span></li>
+                <li>Initialize the node in the constructor</li>
+                <li>Declare and retrieve parameters</li>
+                <li>Create publishers, subscribers, timers, etc.</li>
+                <li>Define callback functions</li>
+                <li>Implement the main function to initialize and spin the node</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Parameter Handling</h3>
+            <p>Parameters are declared using <span class="code-reference">declare_parameter</span> or <span class="code-reference">declare_parameters</span>:</p>
+            <p class="code-reference">self.declare_parameters(namespace='', parameters=[('param_name', default_value), ...])</p>
+            <p>Values are retrieved using <span class="code-reference">get_parameter</span>:</p>
+            <p class="code-reference">self.param_name = self.get_parameter('param_name').value</p>
+            <p>This approach allows parameters to be set from various sources (code defaults, config files, command line).</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Module Organization</h3>
+            <p>For better code organization, we separate utility functions into a different module (<span class="code-reference">utils.py</span>):</p>
+            <p class="code-reference">from .utils import BasicUtils</p>
+            <p>This keeps the main node script focused on ROS2-specific functionality while moving helper functions to a separate file.</p>
+        </div>
+        
+        <div class="tip">
+            <p><strong>Tip:</strong> Use meaningful names for your nodes, topics, and parameters. This makes your code more readable and easier to debug.</p>
+        </div>
+    </section>
+    
+    <section id="launch-files" class="section">
+        <h2>Launch Files</h2>
+        <p>Launch files allow you to start multiple nodes and configure them with specific parameters. They are written in Python and provide a flexible way to initialize your ROS2 system.</p>
+        
+        <a href="https://github.com/yourusername/ros2_basics/blob/main/launch/ros2_basics.launch.py" class="file-link" target="_blank">
+            View the ros2_basics.launch.py file on GitHub
+        </a>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Launch File Structure</h3>
+            <p>A typical launch file contains:</p>
+            <ol>
+                <li>Imports from the launch and launch_ros modules</li>
+                <li>A function named <span class="code-reference">generate_launch_description()</span></li>
+                <li>Launch argument declarations</li>
+                <li>Node definitions</li>
+                <li>A returned <span class="code-reference">LaunchDescription</span> containing all elements</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Launch Arguments</h3>
+            <p>Launch arguments allow you to parameterize your launch files:</p>
+            <p class="code-reference">node_name_arg = DeclareLaunchArgument('node_name', default_value='ros2_basics_node')</p>
+            <p>These arguments can be passed when starting the launch file:</p>
+            <p class="code-reference">ros2 launch ros2_basics ros2_basics.launch.py node_name:=my_custom_name</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Node Definitions</h3>
+            <p>Nodes are defined using the <span class="code-reference">Node</span> class from <span class="code-reference">launch_ros.actions</span>:</p>
+            <p class="code-reference">basic_node = Node(package='ros2_basics', executable='basic_node', parameters=[config_file])</p>
+            <p>Key properties include:</p>
+            <ul>
+                <li><strong>package</strong>: The name of the package containing the node</li>
+                <li><strong>executable</strong>: The name of the executable to run</li>
+                <li><strong>name</strong>: The name to give the node (can override the default)</li>
+                <li><strong>parameters</strong>: List of parameter files or dictionaries</li>
+                <li><strong>remappings</strong>: Topic or service name remappings</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <p><strong>Tip:</strong> Use launch files to set up complex systems with multiple nodes. They're much more flexible than starting each node individually.</p>
+        </div>
+    </section>
+    
+    <section id="building-running" class="section">
+        <h2>Building and Running</h2>
+        <p>This section covers the practical steps to build and run your ROS2 package, including common commands and troubleshooting tips.</p>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Building the Package</h3>
+            <p>To build your package, navigate to your workspace root and run:</p>
+            <p class="code-reference">colcon build --packages-select ros2_basics</p>
+            <p>The <span class="code-reference">--packages-select</span> option builds only the specified package, which is faster when you're working on a single package.</p>
+            
+            <p>After building, source the setup file to make your package available:</p>
+            <p class="code-reference">source install/setup.bash</p>
+            <p>You may want to add this to your <span class="code-reference">.bashrc</span> file for convenience.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Running the Node</h3>
+            <p>You can run your node in several ways:</p>
+            
+            <p><strong>Direct execution:</strong></p>
+            <p class="code-reference">ros2 run ros2_basics basic_node</p>
+            
+            <p><strong>With parameters:</strong></p>
+            <p class="code-reference">ros2 run ros2_basics basic_node --ros-args -p update_rate:=5.0 -p message_text:="Custom message"</p>
+            
+            <p><strong>Using a launch file:</strong></p>
+            <p class="code-reference">ros2 launch ros2_basics ros2_basics.launch.py</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Inspecting the System</h3>
+            <p>ROS2 provides several tools to inspect your running system:</p>
+            
+            <p><strong>List nodes:</strong></p>
+            <p class="code-reference">ros2 node list</p>
+            
+            <p><strong>List topics:</strong></p>
+            <p class="code-reference">ros2 topic list</p>
+            
+            <p><strong>View parameters:</strong></p>
+            <p class="code-reference">ros2 param list</p>
+            <p class="code-reference">ros2 param get /ros2_basics_node update_rate</p>
+            
+            <p><strong>Monitor node output:</strong></p>
+            <p class="code-reference">ros2 topic echo /basic_topic</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Troubleshooting</h3>
+            <p>Common issues and solutions:</p>
+            
+            <p><strong>Package not found:</strong> Make sure you've sourced your workspace (<span class="code-reference">source install/setup.bash</span>).</p>
+            
+            <p><strong>Parameters not loading:</strong> Check that the config file path is correct in your launch file.</p>
+            
+            <p><strong>Node not running:</strong> Check the node executable exists in <span class="code-reference">install/ros2_basics/lib/ros2_basics/</span>.</p>
+        </div>
+        
+        <div class="tip">
+            <p><strong>Tip:</strong> Use <span class="code-reference">ros2 doctor</span> to check your ROS2 setup for common issues and misconfigurations.</p>
+        </div>
+    </section>
+    
+    <footer>
+        <p>ROS2 Basics Tutorial - Created for educational purposes</p>
+        <p>For more information, visit the <a href="https://docs.ros.org/" style="color: #3498db;">official ROS2 documentation</a></p>
+        <a href="https://github.com/yourusername/ros2_basics" class="github-link" target="_blank">View Complete Code on GitHub</a>
+    </footer>
+</body>
+</html>
